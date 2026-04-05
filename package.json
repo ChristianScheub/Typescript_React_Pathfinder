@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prebuild-check": "node prebuild-check.js",
-    "dev": "node prebuild-check.js && vite",
+    "dev": "NODE_ENV=development node prebuild-check.js && vite",
     "build": "node prebuild-check.js && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

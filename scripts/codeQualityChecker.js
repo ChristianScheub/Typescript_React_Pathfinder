@@ -4,6 +4,7 @@
  * - console.log violations (should use Logger instead)
  * - Style tags check (should use CSS classes)
  * - Tag count for UI components
+ * - Folder structure check (no loose files in top-level module folders, max 5 files per subfolder)
  */
 
 import fs from 'fs';
@@ -363,6 +364,67 @@ export function checkCodeQuality() {
           );
         }
       });
+    });
+  });
+
+  // 6. Folder Structure Check - No loose files in module folders, max 5 files per subfolder
+  console.log('Checking folder structure (views, ui, container, services, hooks)...');
+
+  const STRUCTURE_CHECK_FOLDERS = ['views', 'ui', 'container', 'services', 'hooks'];
+  const STRUCTURE_EXEMPT_FILES = ['readme.md'];
+
+  STRUCTURE_CHECK_FOLDERS.forEach((folderName) => {
+    const folderPath = path.join(srcDir, folderName);
+    if (!fs.existsSync(folderPath)) return;
+
+    // Check for files directly in the top-level folder (not allowed except ReadMe.md)
+    const topLevelEntries = fs.readdirSync(folderPath);
+    topLevelEntries.forEach((entry) => {
+      const entryPath = path.join(folderPath, entry);
+      const stat = fs.statSync(entryPath);
+      if (!stat.isDirectory()) {
+        if (!STRUCTURE_EXEMPT_FILES.includes(entry.toLowerCase())) {
+          const relFile = getRelativePath(entryPath, projectRoot);
+          violations.push(
+            `Folder Structure Check (${folderName}): File '${relFile}' is directly in the '${folderName}/' folder. ` +
+            `Files must be placed in a subfolder (e.g. '${folderName}/featureName/${entry}').`
+          );
+        }
+      }
+    });
+
+    // Check subfolders for max 5 files rule
+    function checkSubfolderFileCount(dir) {
+      const entries = fs.readdirSync(dir);
+      let fileCount = 0;
+
+      entries.forEach((entry) => {
+        const entryPath = path.join(dir, entry);
+        const stat = fs.statSync(entryPath);
+        if (stat.isDirectory()) {
+          checkSubfolderFileCount(entryPath);
+        } else {
+          if (!STRUCTURE_EXEMPT_FILES.includes(entry.toLowerCase())) {
+            fileCount++;
+          }
+        }
+      });
+
+      if (fileCount > 5) {
+        const relDir = getRelativePath(dir, projectRoot);
+        violations.push(
+          `Folder Structure Check (${folderName}): Directory '${relDir}' contains ${fileCount} files (max 5 allowed). ` +
+          `Split files into further subfolders to keep the structure organized.`
+        );
+      }
+    }
+
+    // Only check subfolders (not the top-level folder itself, that's covered above)
+    topLevelEntries.forEach((entry) => {
+      const entryPath = path.join(folderPath, entry);
+      if (fs.statSync(entryPath).isDirectory()) {
+        checkSubfolderFileCount(entryPath);
+      }
     });
   });
 
