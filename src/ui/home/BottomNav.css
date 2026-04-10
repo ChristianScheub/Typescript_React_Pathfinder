@@ -1,0 +1,41 @@
+.bottom-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #0e0f14;
+  border-top: 1px solid #1f2133;
+  padding: 10px 0 max(14px, env(safe-area-inset-bottom));
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4b5563;
+  padding: 4px 12px;
+  transition: color 0.2s;
+  flex: 1;
+}
+
+.bottom-nav-item.active {
+  color: #00d4aa;
+}
+
+.bottom-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-nav-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  font-family: system-ui, sans-serif;
+}

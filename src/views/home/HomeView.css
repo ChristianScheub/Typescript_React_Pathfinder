@@ -1,0 +1,395 @@
+/* ─── Screen ──────────────────────────────────────────────────────────────── */
+
+.home-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0e0f14;
+  font-family: system-ui, 'Segoe UI', sans-serif;
+  color: #f3f4f6;
+  overflow: hidden;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #0e0f14;
+  border-bottom: 1px solid #1f2133;
+  flex-shrink: 0;
+}
+
+.home-header-avatar,
+.home-header-gear {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1b26;
+  border: 1px solid #1f2133;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.home-header-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #00d4aa;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Scroll Container ────────────────────────────────────────────────────── */
+
+.home-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.home-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Card Base ───────────────────────────────────────────────────────────── */
+
+.home-card {
+  background: #161720;
+  border: 1px solid #1f2133;
+  border-radius: 16px;
+  padding: 18px 18px 20px;
+}
+
+.card-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #4b5563;
+  margin-bottom: 14px;
+}
+
+/* ─── Globaler Status ─────────────────────────────────────────────────────── */
+
+.global-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.global-score-number {
+  font-size: 56px;
+  font-weight: 700;
+  color: #f3f4f6;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.global-score-percent {
+  font-size: 26px;
+  font-weight: 600;
+  color: #00d4aa;
+  line-height: 1;
+}
+
+.global-score-sublabel {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 16px;
+}
+
+.global-metrics-grid {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 12px;
+}
+
+.global-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.global-metric-label {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.global-metric-value {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.global-resources-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Sinnhaftigkeits-Index ───────────────────────────────────────────────── */
+
+.sinn-card {
+  text-align: center;
+}
+
+.sinn-gauge-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 14px;
+}
+
+.sinn-quote {
+  font-size: 13px;
+  font-style: italic;
+  color: #6b7280;
+  margin: 0;
+  text-align: center;
+}
+
+/* ─── 4-Säulen ────────────────────────────────────────────────────────────── */
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pillar-card {
+  background: #1a1b26;
+  border-radius: 10px;
+  border-left: 3px solid transparent;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pillar-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #6b7280;
+}
+
+.pillar-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #f3f4f6;
+  line-height: 1.1;
+}
+
+/* ─── Path Cards ──────────────────────────────────────────────────────────── */
+
+.path-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 160px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.path-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(6, 8, 12, 0.92) 0%,
+    rgba(6, 8, 12, 0.5) 50%,
+    rgba(6, 8, 12, 0.1) 100%
+  );
+  z-index: 1;
+}
+
+.path-card-body {
+  position: relative;
+  z-index: 2;
+  padding: 20px 18px;
+  width: 100%;
+}
+
+.path-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f3f4f6;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+
+.path-subtitle {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0 0 16px;
+}
+
+.path-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.2s;
+}
+
+.path-btn:active {
+  opacity: 0.8;
+}
+
+.path-btn-primary {
+  background: #00d4aa;
+  color: #0e0f14;
+}
+
+.path-btn-secondary {
+  background: rgba(30, 32, 48, 0.7);
+  color: #9ca3af;
+  border: 1px solid #2a2d40;
+}
+
+/* ─── Impulse ─────────────────────────────────────────────────────────────── */
+
+.impulse-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.impulse-bolt {
+  font-size: 16px;
+}
+
+.impulse-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f3f4f6;
+}
+
+.impulse-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.impulse-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.impulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.impulse-dot-positive {
+  background: #00d4aa;
+}
+
+.impulse-dot-warning {
+  background: #f97316;
+}
+
+.impulse-text {
+  font-size: 13px;
+  color: #9ca3af;
+  line-height: 1.5;
+}
+
+.impulse-hi {
+  font-weight: 600;
+}
+
+.impulse-hi-positive {
+  color: #00d4aa;
+}
+
+.impulse-hi-warning {
+  color: #f97316;
+}
+
+/* ─── Ressourcen-Kapazität Bar Chart ──────────────────────────────────────── */
+
+.resources-card {
+  padding-bottom: 16px;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 6px;
+  height: 100px;
+  margin-top: 4px;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+}
+
+.bar-track {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar-fill {
+  width: 100%;
+  background: #1e5c52;
+  border-radius: 4px 4px 3px 3px;
+  min-height: 6px;
+  transition: height 0.6s ease;
+}
+
+.bar-fill-today {
+  background: #00d4aa;
+}
+
+.bar-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 9px;
+  color: #4b5563;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.bar-label-today {
+  color: #00d4aa;
+}
+
+.bar-heute {
+  font-size: 7px;
+  opacity: 0.8;
+}

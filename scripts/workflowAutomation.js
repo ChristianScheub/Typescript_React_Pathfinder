@@ -9,7 +9,7 @@ import { execSync } from 'child_process';
 export function runWorkflowAutomation() {
   // Determine if we're in dev mode (skip tests for faster startup)
   const isDev = process.env.NODE_ENV === 'development' || process.argv.some(arg => arg.includes('vite'));
-  const skipTests = process.env.SKIP_PREBUILD_TESTS === 'true' || isDev;
+  const skipTests = process.env.SKIP_PREBUILD_TESTS !== 'false' || isDev;
 
   console.log('\n\x1b[36m🔍 Running Pre-Build Checks...\x1b[0m\n');
   

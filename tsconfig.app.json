@@ -22,7 +22,15 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@services/*": ["src/services/*"],
+      "@views/*": ["src/views/*"],
+      "@ui/*": ["src/ui/*"],
+      "@container/*": ["src/container/*"],
+      "@hooks/*": ["src/hooks/*"]
+    }
   },
   "include": ["src"]
 }

@@ -49,6 +49,8 @@ export function checkViewUIComponents() {
   if (fs.existsSync(uiDir)) {
     walkDir(uiDir, (file) => {
       const fileName = path.basename(file);
+      // Skip hidden/system files
+      if (fileName.startsWith('.')) return;
       // Check if it's a .tsx or .css file
       const isValid = fileName.endsWith('.tsx') || fileName.endsWith('.css');
 
@@ -147,9 +149,10 @@ export function checkViewUIComponents() {
       // Pattern: style={{ --property: value, ... but NOT regular CSS properties }}
       const styleObjectMatches = content.match(/style\s*=\s*{\s*[^}]*}/g) || [];
       styleObjectMatches.forEach((match) => {
-        // Check if this contains regular CSS properties (not just --xxx custom properties)
-        // Allow style={{ '--progress': ... }} but disallow style={{ width: ... }}
-        const containsRegularProps = /:\s*['"`]?(?!-)[a-zA-Z]/i.test(match);
+        // Strip custom property assignments ('--xxx': ...) before checking
+        // This prevents false positives when a CSS custom property value is a variable reference
+        const strippedMatch = match.replace(/\[?['"`]?--[\w-]+['"`]?\]?\s*(?:as\s+\S+\s*)?:\s*[^,}]*/g, '');
+        const containsRegularProps = /:\s*['"`]?(?!-)[a-zA-Z]/i.test(strippedMatch);
         
         if (containsRegularProps) {
           violations.push(

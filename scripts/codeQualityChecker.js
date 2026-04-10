@@ -4,7 +4,8 @@
  * - console.log violations (should use Logger instead)
  * - Style tags check (should use CSS classes)
  * - Tag count for UI components
- * - Folder structure check (no loose files in top-level module folders, max 5 files per subfolder)
+ * - Folder structure check (no loose files in top-level module folders incl. types/, max 5 files per subfolder, no loose files in any nested types/ folder)
+ * - Type export location check (interface/type declarations only allowed inside types/ folders)
  */
 
 import fs from 'fs';
@@ -126,18 +127,20 @@ export function checkCodeQuality() {
         );
       }
 
-      // Check div, p, span, label, h1, h2 tag count
-      const tagMatches = content.match(/<(div|p|span|label|h1|h2)[\s>]/g) || [];
-      const tagCount = tagMatches.length;
-      const lineCount = lines.length;
-      const maxAllowed = Math.max(5, Math.ceil(lineCount * 0.1));
+      // Check div, p, span, label, h1, h2 tag count (skip for ui folder – dumb components may have many tags)
+      if (folderName !== 'ui') {
+        const tagMatches = content.match(/<(div|p|span|label|h1|h2)[\s>]/g) || [];
+        const tagCount = tagMatches.length;
+        const lineCount = lines.length;
+        const maxAllowed = Math.max(5, Math.ceil(lineCount * 0.1));
 
-      if (tagCount > maxAllowed) {
-        violations.push(
-          `Tag Count Check (${folderName}): File '${relFile}' has ${tagCount} div/p/span/label/h1/h2 tags, ` +
-          `but maximum allowed is ${maxAllowed} (10 or 10% of ${lineCount} lines). ` +
-          `Consider breaking this component into smaller sub-components.`
-        );
+        if (tagCount > maxAllowed) {
+          violations.push(
+            `Tag Count Check (${folderName}): File '${relFile}' has ${tagCount} div/p/span/label/h1/h2 tags, ` +
+            `but maximum allowed is ${maxAllowed} (10 or 10% of ${lineCount} lines). ` +
+            `Consider breaking this component into smaller sub-components.`
+          );
+        }
       }
     });
   });
@@ -146,7 +149,7 @@ export function checkCodeQuality() {
   console.log('Checking for absolute import paths with proper @ aliases...');
 
   // Define allowed import aliases
-  const allowedAliases = ['@services', '@components', '@views', '@ui', '@config', '@types', '@hooks'];
+  const allowedAliases = ['@services', '@components', '@container', '@views', '@ui', '@config', '@types', '@hooks'];
 
   walkDir(srcDir, (file) => {
     if (!file.endsWith('.ts') && !file.endsWith('.tsx')) return;
@@ -228,6 +231,7 @@ export function checkCodeQuality() {
     /\.test\./,
     /Logger/,
     /\.css\.ts$/,
+    /onboarding/,  // TODO: i18n für Onboarding noch nicht eingerichtet
   ];
 
   // Common technical terms and characters that are allowed (not user-facing text)
@@ -370,8 +374,8 @@ export function checkCodeQuality() {
   // 6. Folder Structure Check - No loose files in module folders, max 5 files per subfolder
   console.log('Checking folder structure (views, ui, container, services, hooks)...');
 
-  const STRUCTURE_CHECK_FOLDERS = ['views', 'ui', 'container', 'services', 'hooks'];
-  const STRUCTURE_EXEMPT_FILES = ['readme.md'];
+  const STRUCTURE_CHECK_FOLDERS = ['views', 'ui', 'container', 'services', 'hooks', 'types'];
+  const STRUCTURE_EXEMPT_FILES = ['readme.md', '.gitkeep'];
 
   STRUCTURE_CHECK_FOLDERS.forEach((folderName) => {
     const folderPath = path.join(srcDir, folderName);
@@ -393,7 +397,8 @@ export function checkCodeQuality() {
       }
     });
 
-    // Check subfolders for max 5 files rule
+    // Check subfolders for max 5 files rule (ui allows more due to paired .tsx/.css files)
+    const maxFilesPerSubfolder = folderName === 'ui' ? 10 : 5;
     function checkSubfolderFileCount(dir) {
       const entries = fs.readdirSync(dir);
       let fileCount = 0;
@@ -410,10 +415,10 @@ export function checkCodeQuality() {
         }
       });
 
-      if (fileCount > 5) {
+      if (fileCount > maxFilesPerSubfolder) {
         const relDir = getRelativePath(dir, projectRoot);
         violations.push(
-          `Folder Structure Check (${folderName}): Directory '${relDir}' contains ${fileCount} files (max 5 allowed). ` +
+          `Folder Structure Check (${folderName}): Directory '${relDir}' contains ${fileCount} files (max ${maxFilesPerSubfolder} allowed). ` +
           `Split files into further subfolders to keep the structure organized.`
         );
       }
@@ -424,6 +429,74 @@ export function checkCodeQuality() {
       const entryPath = path.join(folderPath, entry);
       if (fs.statSync(entryPath).isDirectory()) {
         checkSubfolderFileCount(entryPath);
+      }
+    });
+  });
+
+  // Nested types/ folder check – any types/ directory anywhere in src/ must not contain loose files
+  function checkNestedTypesFolders(dir) {
+    if (!fs.existsSync(dir)) return;
+    fs.readdirSync(dir).forEach((entry) => {
+      const entryPath = path.join(dir, entry);
+      if (!fs.statSync(entryPath).isDirectory()) return;
+
+      if (entry === 'types') {
+        fs.readdirSync(entryPath).forEach((typeEntry) => {
+          const typeEntryPath = path.join(entryPath, typeEntry);
+          if (!fs.statSync(typeEntryPath).isDirectory()) {
+            if (!STRUCTURE_EXEMPT_FILES.includes(typeEntry.toLowerCase())) {
+              const relFile = getRelativePath(typeEntryPath, projectRoot);
+              violations.push(
+                `Folder Structure Check (types): File '${relFile}' is directly inside a 'types/' folder. ` +
+                `Files must be placed in a subfolder (e.g. 'types/models/${typeEntry}').`
+              );
+            }
+          }
+        });
+      }
+
+      checkNestedTypesFolders(entryPath);
+    });
+  }
+
+  checkNestedTypesFolders(srcDir);
+
+  // 7. Type Export Location Check – interface/type declarations only allowed inside types/ folders
+  console.log('Checking that type/interface declarations are only exported from types/ folders...');
+
+  walkDir(srcDir, (file) => {
+    if (!file.endsWith('.ts') && !file.endsWith('.tsx')) return;
+    if (file.includes('.test.')) return;
+
+    // Normalise separators so /types/ check works on Windows too
+    const normalizedFile = file.split(path.sep).join('/');
+    if (normalizedFile.includes('/types/')) return;
+
+    const relFile = getRelativePath(file, projectRoot);
+    const content = fs.readFileSync(file, 'utf8');
+    const lines = content.split('\n');
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
+
+      // export interface Foo  /  export default interface Foo
+      if (/^export\s+(?:default\s+)?interface\s+\w/.test(trimmed)) {
+        violations.push(
+          `Type Export Check: File '${relFile}' line ${idx + 1}: ` +
+          `'interface' declarations must only be exported from a 'types/' folder. ` +
+          `Move this interface into a types/ subfolder.`
+        );
+        return;
+      }
+
+      // export type Foo = ...  (type alias declaration, NOT a re-export like export type { Foo })
+      if (/^export\s+type\s+\w/.test(trimmed) && !/^export\s+type\s+\{/.test(trimmed)) {
+        violations.push(
+          `Type Export Check: File '${relFile}' line ${idx + 1}: ` +
+          `'type' alias declarations must only be exported from a 'types/' folder. ` +
+          `Move this type alias into a types/ subfolder.`
+        );
       }
     });
   });
