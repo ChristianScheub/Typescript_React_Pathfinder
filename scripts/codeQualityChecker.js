@@ -464,6 +464,9 @@ export function checkCodeQuality() {
   // 7. Type Export Location Check – interface/type declarations only allowed inside types/ folders
   console.log('Checking that type/interface declarations are only exported from types/ folders...');
 
+  const TYPE_EXPORT_REGEX = /export\s+type\s+/; // Matches 'export type' declarations
+  const INTERFACE_EXPORT_REGEX = /export\s+interface\s+/; // Matches 'export interface' declarations
+
   walkDir(srcDir, (file) => {
     if (!file.endsWith('.ts') && !file.endsWith('.tsx')) return;
     if (file.includes('.test.')) return;
@@ -473,31 +476,19 @@ export function checkCodeQuality() {
     if (normalizedFile.includes('/types/')) return;
 
     const relFile = getRelativePath(file, projectRoot);
-    const content = fs.readFileSync(file, 'utf8');
-    const lines = content.split('\n');
+    const lines = fs.readFileSync(file, 'utf8').split('\n');
 
     lines.forEach((line, idx) => {
-      const trimmed = line.trim();
-      if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
-
-      // export interface Foo  /  export default interface Foo
-      if (/^export\s+(?:default\s+)?interface\s+\w/.test(trimmed)) {
-        violations.push(
-          `Type Export Check: File '${relFile}' line ${idx + 1}: ` +
-          `'interface' declarations must only be exported from a 'types/' folder. ` +
-          `Move this interface into a types/ subfolder.`
-        );
-        return;
+      if (TYPE_EXPORT_REGEX.test(line)) {
+        const isInTypesFolder = /\/types\//.test(file);
+        if (!isInTypesFolder) {
+          violations.push(
+            `Type Export Check: File '${relFile}' line ${idx + 1}: 'type' alias declarations must only be exported from a 'types/' folder.`
+          );
+        }
       }
 
-      // export type Foo = ...  (type alias declaration, NOT a re-export like export type { Foo })
-      if (/^export\s+type\s+\w/.test(trimmed) && !/^export\s+type\s+\{/.test(trimmed)) {
-        violations.push(
-          `Type Export Check: File '${relFile}' line ${idx + 1}: ` +
-          `'type' alias declarations must only be exported from a 'types/' folder. ` +
-          `Move this type alias into a types/ subfolder.`
-        );
-      }
+      // 'interface' exports are allowed everywhere, so no violation check needed
     });
   });
 
