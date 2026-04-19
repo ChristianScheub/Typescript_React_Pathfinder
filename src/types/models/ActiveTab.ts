@@ -1,0 +1,1 @@
+export type ActiveTab = 'tab1' | 'tab2';

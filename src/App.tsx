@@ -1,6 +1,6 @@
 import { storageService } from '@services/storage';
 import { OnboardingContainer } from '@container/onboarding/OnboardingContainer';
-import { HomeView } from '@views/home/HomeView';
+import HomeContainer from '@container/home/HomeContainer';
 import './App.css';
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     return <OnboardingContainer />;
   }
 
-  return <HomeView />;
+  return <HomeContainer />;
 }
 
 export default App;

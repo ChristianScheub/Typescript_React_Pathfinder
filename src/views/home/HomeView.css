@@ -79,6 +79,22 @@
   margin-bottom: 14px;
 }
 
+/* ─── Dynamic Color Classes ─────────────────────────────────────────────── */
+
+.global-metric-value-orange { color: #f97316; }
+.global-metric-value-yellow { color: #eab308; }
+.global-metric-value-green { color: #22c55e; }
+.global-metric-value-teal { color: #00d4aa; }
+
+.pillar-card-color-orange { border-left-color: #f97316; }
+.pillar-card-color-yellow { border-left-color: #eab308; }
+.pillar-card-color-green { border-left-color: #22c55e; }
+.pillar-card-color-teal { border-left-color: #00d4aa; }
+
+.pillar-label-uppercase {
+  text-transform: uppercase;
+}
+
 /* ─── Globaler Status ─────────────────────────────────────────────────────── */
 
 .global-score-row {
@@ -156,6 +172,10 @@
   color: #6b7280;
   margin: 0;
   text-align: center;
+}
+
+.sinn-gauge-circle {
+  transition: stroke-dashoffset 0.8s ease;
 }
 
 /* ─── 4-Säulen ────────────────────────────────────────────────────────────── */
@@ -260,6 +280,20 @@
   background: rgba(30, 32, 48, 0.7);
   color: #9ca3af;
   border: 1px solid #2a2d40;
+}
+
+/* ─── Path Card Gradients ───────────────────────────────────────────────── */
+
+.path-card-stille {
+  background: linear-gradient(160deg, #0d1a0d 0%, #0a1208 40%, #060e09 70%, #050d07 100%);
+}
+
+.path-card-wachstum {
+  background: linear-gradient(160deg, #08091a 0%, #0a0a20 40%, #0d0a1e 70%, #080818 100%);
+}
+
+.path-card-verbindung {
+  background: linear-gradient(160deg, #1a0e08 0%, #1a120a 40%, #160e08 70%, #120b06 100%);
 }
 
 /* ─── Impulse ─────────────────────────────────────────────────────────────── */
@@ -368,6 +402,15 @@
   min-height: 6px;
   transition: height 0.6s ease;
 }
+
+.bar-fill-8 { height: 8%; }
+.bar-fill-12 { height: 12%; }
+.bar-fill-13 { height: 13%; }
+.bar-fill-5 { height: 5%; }
+.bar-fill-3 { height: 3%; }
+.bar-fill-11 { height: 11%; }
+.bar-fill-10 { height: 10%; }
+.bar-fill-6 { height: 6%; }
 
 .bar-fill-today {
   background: #00d4aa;

@@ -1,0 +1,43 @@
+{
+  "path.stille.name": "Path of Silence",
+  "path.stille.subtitle": "Focus on Reflection & Vitality",
+  "path.wachstum.name": "Path of Growth",
+  "path.wachstum.subtitle": "Focus on Career & Meaning",
+  "path.verbindung.name": "Path of Connection",
+  "path.verbindung.subtitle": "Focus on Community & Family",
+  "4_ryff_eudaimonia": "Eudaimonia Index",
+  "1_sdt_motivation": "SDT Motivation",
+  "2_kastner_balance": "Kastner Balance",
+  "3_seiwert_pillars": "Seiwert Pillars",
+  "global_status": "Global Status",
+  "autonomy_score": "Autonomy Score",
+  "resources": "Resources",
+  "attention_needed": "Attention Needed",
+  "pillar_warning": "Warning: The pillar {{pillar}} needs attention today.",
+  "strongest_driver": "Your {{driver}} is your strongest driver with {{value}}%.",
+  "resource_pressure": "Your resources are under pressure - demands outweigh.",
+  "ui": {
+    "choose": "CHOOSE",
+    "today": "TODAY",
+    "settings": "Settings",
+    "autonomy": "Autonomy",
+    "competence": "Competence",
+    "relatedness": "Relatedness",
+    "work": "Work",
+    "social": "Social",
+    "health": "Health",
+    "meaning": "Meaning",
+    "optimum": "Optimum",
+    "good": "Good",
+    "medium": "Medium",
+    "critical": "Critical",
+    "global_status_label": "GLOBAL STATUS",
+    "sinn_index_label": "MEANING INDEX",
+    "seiwert_radar_label": "4-PILLAR RADAR (SEIWERT)",
+    "resource_capacity_label": "RESOURCE CAPACITY",
+    "impulse_title": "Impulses"
+  },
+  "namespace": {
+    "achtung_die_saeule": "Attention: The pillar \"{{weakName}}\" needs attention today."
+  }
+}
